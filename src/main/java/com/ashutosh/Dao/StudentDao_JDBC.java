@@ -22,6 +22,21 @@ public class StudentDao_JDBC implements StudentDao {
     @Override
     public Collection<Student> getAllStudents() {
         String sql="Select * from student";
+        runQueryConvertResultToMap(sql);
+        return this.studentsMap.values();
+    }
+
+    @Override
+    public Student getStudentByID(int id) {
+
+        String sql="Select * from student WHERE id="+id;
+        runQueryConvertResultToMap(sql);
+
+
+        return this.studentsMap.get(id);
+    }
+
+    private void runQueryConvertResultToMap(String sql) {
         List<Map<String, Object>> str = jdbcTemplate.queryForList(sql);
         studentsMap=new HashMap<Integer, Student>();
         for (Map<String,Object> item: str) {
@@ -42,12 +57,6 @@ public class StudentDao_JDBC implements StudentDao {
             }
             studentsMap.put(student.getId(),(student));
         }
-        return this.studentsMap.values();
-    }
-
-    @Override
-    public Student getStudentByID(int id) {
-        return this.studentsMap.get(id);
     }
 
     @Override
