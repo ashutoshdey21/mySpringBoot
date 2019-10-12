@@ -61,10 +61,22 @@ public class StudentDao_JDBC implements StudentDao {
     @Override
     public void updateStudent(Student student) {
 
+        String sql="UPDATE student \n" +
+                "SET \n" +
+                "    name = '"+student.getName()+"',\n" +
+                "    course = '"+student.getCourse()+"'\n" +
+                "WHERE\n" +
+                "    id = "+student.getId();
+        System.out.println(jdbcTemplate.update(sql)+" row(s) updated");
+
     }
 
     @Override
     public void insertStudent(Student student) {
+        String sql="insert into student(id, name, course) values " +
+                "("+student.getId()+", \""+student.getName()+"\", \""+student.getCourse()+"\");";
+        /*System.out.println(sql);*/
+        System.out.println(jdbcTemplate.update(sql)+" row(s) inserted");
 
     }
 }
