@@ -5,7 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Repository("jdbc")
 public class StudentDao_JDBC implements StudentDao {
@@ -13,13 +17,13 @@ public class StudentDao_JDBC implements StudentDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    private static List<Student> students;
+    private static Map <Integer, Student> studentsMap;
 
     @Override
     public Collection<Student> getAllStudents() {
         String sql="Select * from student";
         List<Map<String, Object>> str = jdbcTemplate.queryForList(sql);
-        students = new ArrayList<>();
+        studentsMap=new HashMap<Integer, Student>();
         for (Map<String,Object> item: str) {
             Student student = new Student();
             for (Map.Entry<String, Object> entry : item.entrySet()) {
@@ -36,18 +40,21 @@ public class StudentDao_JDBC implements StudentDao {
                     student.setCourse((String) entry.getValue());
                 }
             }
-            students.add(student);
+            studentsMap.put(student.getId(),(student));
         }
-        return students;
+        return this.studentsMap.values();
     }
 
     @Override
     public Student getStudentByID(int id) {
-        return null;
+        return this.studentsMap.get(id);
     }
 
     @Override
     public void removeStudentByID(int id) {
+        String sql="DELETE FROM student WHERE id="+id;
+        //System.out.println(sql);
+        System.out.println(jdbcTemplate.update(sql)+" row(s) deleted");
 
     }
 
